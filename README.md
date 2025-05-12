@@ -62,10 +62,10 @@ A aplicação é baseada em um modelo relacional simples, com duas entidades pri
 
 ```bash
 # Clone o repositório
-git clone https://github.com/seu-usuario/seu-repositorio.git
+git clone https://github.com/T0madon/futebol-API.git
 
 # Acesse o diretório
-cd seu-repositorio
+cd futebol-API
 
 # Execute o projeto
 ./mvnw spring-boot:run
