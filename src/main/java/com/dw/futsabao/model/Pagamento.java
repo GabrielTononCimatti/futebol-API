@@ -2,6 +2,8 @@ package com.dw.futsabao.model;
 
 import jakarta.persistence.*;
 
+import java.math.BigDecimal;
+
 @Entity
 public class Pagamento {
 
@@ -11,10 +13,10 @@ public class Pagamento {
 
     private Short ano;
     private Byte mes;
-    private Double valor;
+    private BigDecimal valor;
 
     @ManyToOne
-    @JoinColumn(name = "cod_jogador")
+    @JoinColumn(name = "cod_jogador", nullable = false)
     private Jogador jogador;
 
     //Construtores
@@ -22,7 +24,7 @@ public class Pagamento {
     public Pagamento() {
     }
 
-    public Pagamento(Short ano, Byte mes, Double valor, Jogador jogador) {
+    public Pagamento(Short ano, Byte mes, BigDecimal valor, Jogador jogador) {
         this.ano = ano;
         this.mes = mes;
         this.valor = valor;
@@ -55,11 +57,11 @@ public class Pagamento {
         this.mes = mes;
     }
 
-    public Double getValor() {
+    public BigDecimal getValor() {
         return valor;
     }
 
-    public void setValor(Double valor) {
+    public void setValor(BigDecimal valor) {
         this.valor = valor;
     }
 
