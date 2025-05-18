@@ -1,6 +1,5 @@
 package com.dw.futsabao.controller;
 
-import com.dw.futsabao.model.Jogador;
 import com.dw.futsabao.model.Pagamento;
 import com.dw.futsabao.repository.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,15 +21,15 @@ public class PagamentoController {
     @GetMapping
     public ResponseEntity<List<Pagamento>> buscarPagamentos(@RequestParam(required = false) Short ano, @RequestParam(required = false) Byte mes) {
         try {
-            List<Pagamento> pagamentos;
+            List<Pagamento> pagamentos = null;
 
             if (ano == null && mes == null)
                 pagamentos = pagamentoRepository.findAll();
-            else if (ano != null && mes == null)
+            if (ano != null && mes == null)
                 pagamentos = pagamentoRepository.findByAno(ano);
-            else if (ano == null && mes != null)
+            if (ano == null && mes != null)
                 return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            else
+            if(ano != null && mes != null)
                 pagamentos = pagamentoRepository.findByMesAndAno(mes, ano);
 
             if (pagamentos.isEmpty())
@@ -88,6 +87,35 @@ public class PagamentoController {
             else
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //PATCH pagamento por id
+    @PatchMapping("/{id}")
+    public ResponseEntity<Pagamento> parcialUpdatePagamento(@PathVariable("id") Integer id, @RequestBody Pagamento pagamento)
+    {
+        try
+        {
+            Optional<Pagamento> data = pagamentoRepository.findById(id);
+
+            if(data.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            Pagamento pagamentoResp = data.get();
+
+            if(pagamento.getAno() != null)
+                pagamentoResp.setAno(pagamento.getAno());
+            if(pagamento.getMes() != null)
+                pagamentoResp.setMes(pagamento.getMes());
+            if(pagamento.getValor() != null)
+                pagamentoResp.setValor(pagamento.getValor());
+            if(pagamento.getJogador() != null)
+                pagamentoResp.setJogador(pagamento.getJogador());
+
+            return new ResponseEntity<>(pagamentoRepository.save(pagamentoResp), HttpStatus.OK);
+        }
+        catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
