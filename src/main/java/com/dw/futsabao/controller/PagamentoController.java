@@ -91,4 +91,29 @@ public class PagamentoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //DELETE por id
+    @DeleteMapping("/{id}")
+    public ResponseEntity<HttpStatus> deletePagamento(@PathVariable("id") Integer id){
+        try {
+            pagamentoRepository.deleteById(id);
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+
+    }
+
+    //DELETE todos os pagamentos
+    @DeleteMapping
+    public ResponseEntity<HttpStatus> deleteAllPagamento()
+    {
+        try {
+            pagamentoRepository.deleteAll();
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }
