@@ -115,6 +115,9 @@ public class PagamentoController {
 
             Pagamento pagamentoResp = data.get();
 
+            if(jogadorRepository.findById(pagamentoResp.getJogador().getCodJogador()).isEmpty())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
             if(pagamento.getAno() != null)
                 pagamentoResp.setAno(pagamento.getAno());
             if(pagamento.getMes() != null)
