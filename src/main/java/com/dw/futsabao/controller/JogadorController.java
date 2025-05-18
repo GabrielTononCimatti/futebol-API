@@ -1,6 +1,7 @@
 package com.dw.futsabao.controller;
 
 import com.dw.futsabao.model.Jogador;
+import com.dw.futsabao.model.Pagamento;
 import com.dw.futsabao.repository.JogadorRepository;
 import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,6 +58,25 @@ public class JogadorController {
         }
     }
 
+    //GET dos pagamentos de determinado jogador
+    @GetMapping("/{id}/pagamentos")
+    public ResponseEntity<List<Pagamento>> buscarPagamentosPorJogador(@PathVariable("id") Integer id) {
+        try {
+            Optional<Jogador> jogador = jogadorRepository.findById(id);
+
+            if (jogador.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            if (jogador.get().getPagamentos().isEmpty())
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
+            return new ResponseEntity<>(jogador.get().getPagamentos(), HttpStatus.OK);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     //POST novo jogador
     @PostMapping
     public ResponseEntity<Jogador> createJogador(@RequestBody Jogador jogador) {
@@ -73,21 +93,24 @@ public class JogadorController {
     @PutMapping("/{id}")
     public ResponseEntity<Jogador> updateJogador(@PathVariable("id") Integer id, @RequestBody Jogador jogador)
     {
-        Optional<Jogador> data = jogadorRepository.findById(id);
+        try {
+            Optional<Jogador> data = jogadorRepository.findById(id);
 
-        if (data.isPresent())
-        {
-            Jogador jogadorResp = data.get();
-            jogadorResp.setNome(jogador.getNome());
-            jogadorResp.setEmail(jogador.getEmail());
-            jogadorResp.setDatanasc(jogador.getDatanasc());
-            jogadorResp.setPagamentos(jogador.getPagamentos());
+            if (data.isPresent())
+            {
+                Jogador jogadorResp = data.get();
+                jogadorResp.setNome(jogador.getNome());
+                jogadorResp.setEmail(jogador.getEmail());
+                jogadorResp.setDatanasc(jogador.getDatanasc());
+                jogadorResp.setPagamentos(jogador.getPagamentos());
 
-            return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
+                return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
-
     }
 
     //DELETE por id
