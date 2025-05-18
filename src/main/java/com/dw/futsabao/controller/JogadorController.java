@@ -3,7 +3,6 @@ package com.dw.futsabao.controller;
 import com.dw.futsabao.model.Jogador;
 import com.dw.futsabao.model.Pagamento;
 import com.dw.futsabao.repository.JogadorRepository;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,15 +22,15 @@ public class JogadorController {
     @GetMapping
     public ResponseEntity<List<Jogador>> buscarJogadores(@RequestParam(required = false) String nome, @RequestParam(required = false) String email) {
         try {
-            List<Jogador> jogadores;
+            List<Jogador> jogadores = null;
 
             if (nome == null && email == null)
                 jogadores = jogadorRepository.findAll();
-            else if (nome != null && email == null)
+            if (nome != null && email == null)
                 jogadores = jogadorRepository.findByNomeContainingIgnoreCase(nome);
-            else if (nome == null && email != null)
+            if (nome == null && email != null)
                 jogadores = jogadorRepository.findByEmailContainingIgnoreCase(email);
-            else
+            if (nome != null && email != null)
                 jogadores = jogadorRepository.findByNomeContainingIgnoreCaseAndEmailContainingIgnoreCase(nome, email);
 
             if (jogadores.isEmpty())
@@ -96,18 +95,17 @@ public class JogadorController {
         try {
             Optional<Jogador> data = jogadorRepository.findById(id);
 
-            if (data.isPresent())
-            {
-                Jogador jogadorResp = data.get();
-                jogadorResp.setNome(jogador.getNome());
-                jogadorResp.setEmail(jogador.getEmail());
-                jogadorResp.setDatanasc(jogador.getDatanasc());
-                jogadorResp.setPagamentos(jogador.getPagamentos());
-
-                return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
-            }
-            else
+            if(data.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            System.out.println("OII");
+            Jogador jogadorResp = data.get();
+            jogadorResp.setNome(jogador.getNome());
+            jogadorResp.setEmail(jogador.getEmail());
+            jogadorResp.setDatanasc(jogador.getDatanasc());
+
+            return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
