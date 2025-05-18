@@ -1,6 +1,7 @@
 package com.dw.futsabao.controller;
 
 import com.dw.futsabao.model.Pagamento;
+import com.dw.futsabao.repository.JogadorRepository;
 import com.dw.futsabao.repository.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,6 +17,9 @@ public class PagamentoController {
 
     @Autowired
     PagamentoRepository pagamentoRepository;
+
+    @Autowired
+    JogadorRepository jogadorRepository;
 
     //GET com filtros (ano e mes/ano)
     @GetMapping
@@ -59,6 +63,10 @@ public class PagamentoController {
     @PostMapping
     public ResponseEntity<Pagamento> createPagamento(@RequestBody Pagamento pagamento) {
         try {
+
+            if(jogadorRepository.findById(pagamento.getJogador().getCodJogador()).isEmpty())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
             Pagamento pagamentoResp = pagamentoRepository.save(new Pagamento(pagamento.getAno(), pagamento.getMes(), pagamento.getValor(), pagamento.getJogador()));
             return new ResponseEntity<>(pagamentoResp, HttpStatus.CREATED);
 
@@ -74,18 +82,21 @@ public class PagamentoController {
         try {
             Optional<Pagamento> data = pagamentoRepository.findById(id);
 
-            if (data.isPresent())
-            {
-                Pagamento pagamentoResp = data.get();
-                pagamentoResp.setAno(pagamento.getAno());
-                pagamentoResp.setMes(pagamento.getMes());
-                pagamentoResp.setValor(pagamento.getValor());
-                pagamentoResp.setJogador(pagamento.getJogador());
-
-                return new ResponseEntity<>(pagamentoRepository.save(pagamentoResp), HttpStatus.OK);
-            }
-            else
+            if(data.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            Pagamento pagamentoResp = data.get();
+
+            if(jogadorRepository.findById(pagamentoResp.getJogador().getCodJogador()).isEmpty())
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+
+            pagamentoResp.setAno(pagamento.getAno());
+            pagamentoResp.setMes(pagamento.getMes());
+            pagamentoResp.setValor(pagamento.getValor());
+            pagamentoResp.setJogador(pagamento.getJogador());
+
+            return new ResponseEntity<>(pagamentoRepository.save(pagamentoResp), HttpStatus.OK);
+
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
