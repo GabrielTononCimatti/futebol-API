@@ -98,7 +98,6 @@ public class JogadorController {
             if(data.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
 
-            System.out.println("OII");
             Jogador jogadorResp = data.get();
             jogadorResp.setNome(jogador.getNome());
             jogadorResp.setEmail(jogador.getEmail());
@@ -107,6 +106,33 @@ public class JogadorController {
             return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
 
         } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    //PATCH jogador por id
+    @PatchMapping("/{id}")
+    public ResponseEntity<Jogador> parcialUpdateJogador(@PathVariable("id") Integer id, @RequestBody Jogador jogador)
+    {
+        try
+        {
+            Optional<Jogador> data = jogadorRepository.findById(id);
+
+            if(data.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            Jogador jogadorResp = data.get();
+
+            if(jogador.getNome() != null)
+                jogadorResp.setNome(jogador.getNome());
+            if(jogador.getEmail() != null)
+                jogadorResp.setEmail(jogador.getEmail());
+            if(jogador.getDatanasc() != null)
+                jogadorResp.setDatanasc(jogador.getDatanasc());
+
+            return new ResponseEntity<>(jogadorRepository.save(jogadorResp), HttpStatus.OK);
+        }
+        catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
