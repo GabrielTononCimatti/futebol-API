@@ -6,12 +6,10 @@ import com.dw.futsabao.repository.PagamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/pagamentos")
@@ -43,11 +41,18 @@ public class PagamentoController {
         }
     }
 
+    @GetMapping("/{id}")
+    public ResponseEntity<Pagamento> buscarPorId(@PathVariable("id") Integer id) {
+        try {
+            Optional<Pagamento> pagamento = pagamentoRepository.findById(id);
 
-    @GetMapping("/jogador/{codJogador}")
-    public List<Pagamento> listarPorJogador(@PathVariable Integer codJogador) {
-        return pagamentoService.listarPorJogador(codJogador);
-    }
+            if (pagamento.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(pagamento.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
 
     @PostMapping
     public Pagamento criar(@RequestBody Pagamento pagamento) {
