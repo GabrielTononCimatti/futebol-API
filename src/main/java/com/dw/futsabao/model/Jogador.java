@@ -16,7 +16,7 @@ public class Jogador {
     private String email;
     private LocalDate datanasc;
 
-    @OneToMany(mappedBy = "jogador", cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "jogador", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Pagamento> pagamentos = new ArrayList<>();
 
     //Construtores
