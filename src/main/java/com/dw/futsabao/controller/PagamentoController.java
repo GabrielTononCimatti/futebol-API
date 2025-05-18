@@ -20,37 +20,29 @@ public class PagamentoController {
     @Autowired
     PagamentoRepository pagamentoRepository;
 
-    //GET com filtros (nome e email)
+    //GET com filtros (ano e mes/ano)
     @GetMapping
-    public ResponseEntity<List<Pagamento>> buscarPagamentos(@RequestParam(required = false) Short ano, @RequestParam(required = false) Byte mes, @RequestParam(required = false) BigDecimal valor) {
+    public ResponseEntity<List<Pagamento>> buscarPagamentos(@RequestParam(required = false) Short ano, @RequestParam(required = false) Byte mes) {
         try {
-            List<Jogador> jogadores;
+            List<Pagamento> pagamentos;
 
-            if (nome == null && email == null)
-                jogadores = jogadorRepository.findAll();
-            else if (nome != null && email == null)
-                jogadores = jogadorRepository.findByNomeContainingIgnoreCase(nome);
-            else if (nome != null && email == null)
-                jogadores = jogadorRepository.findByEmailContainingIgnoreCase(email);
+            if (ano == null && mes == null)
+                pagamentos = pagamentoRepository.findAll();
+            else if (ano != null && mes == null)
+                pagamentos = pagamentoRepository.findByAno(ano);
+            else if (ano == null && mes != null)
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             else
-                jogadores = jogadorRepository.findByNomeContainingIgnoreCaseAndEmailContainingIgnoreCase(nome, email);
+                pagamentos = pagamentoRepository.findByMesAndAno(mes, ano);
 
-            if (jogadores.isEmpty())
+            if (pagamentos.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            return new ResponseEntity<>(jogadores, HttpStatus.OK);
+            return new ResponseEntity<>(pagamentos, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
-    public PagamentoController(PagamentoService pagamentoService) {
-        this.pagamentoService = pagamentoService;
-    }
-
-    @GetMapping
-    public List<Pagamento> listar() {
-        return pagamentoService.listarTodos();
-    }
 
     @GetMapping("/jogador/{codJogador}")
     public List<Pagamento> listarPorJogador(@PathVariable Integer codJogador) {

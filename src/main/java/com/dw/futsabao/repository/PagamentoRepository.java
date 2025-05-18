@@ -7,7 +7,6 @@ import java.util.List;
 
 @Repository
 public interface PagamentoRepository extends JpaRepository<Pagamento, Integer> {
-    List<Pagamento> findByJogadorCodJogador(Integer codJogador);
     List<Pagamento> findByAno(Short ano);
-    List<Pagamento> findByMesAno(Byte mes, Short ano);
+    List<Pagamento> findByMesAndAno(Byte mes, Short ano);
 }
