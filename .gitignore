@@ -67,5 +67,8 @@ buildNumber.properties
 # https://github.com/takari/maven-wrapper#usage-without-binary-jar
 .mvn/wrapper/maven-wrapper.jar
 
+*.properties
+src/main/resources/application.properties
+src/main/resources/
 
 # End of https://mrkandreev.name/snippets/gitignore-generator/#Java,Maven,Java-Web
