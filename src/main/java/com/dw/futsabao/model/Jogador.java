@@ -1,5 +1,6 @@
 package com.dw.futsabao.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -17,6 +18,7 @@ public class Jogador {
     private LocalDate datanasc;
 
     @OneToMany(mappedBy = "jogador", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonBackReference
     private List<Pagamento> pagamentos = new ArrayList<>();
 
     //Construtores
