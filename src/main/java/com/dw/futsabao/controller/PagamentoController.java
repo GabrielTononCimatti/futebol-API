@@ -41,6 +41,7 @@ public class PagamentoController {
         }
     }
 
+    //GET por id
     @GetMapping("/{id}")
     public ResponseEntity<Pagamento> buscarPorId(@PathVariable("id") Integer id) {
         try {
@@ -53,9 +54,17 @@ public class PagamentoController {
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
+    }
 
+    //POST novo pagamento
     @PostMapping
-    public Pagamento criar(@RequestBody Pagamento pagamento) {
-        return pagamentoService.salvar(pagamento);
+    public ResponseEntity<Pagamento> createPagamento(@RequestBody Pagamento pagamento) {
+        try {
+            Pagamento pagamentoResp = pagamentoRepository.save(new Pagamento(pagamento.getAno(), pagamento.getMes(), pagamento.getValor(), pagamento.getJogador()));
+            return new ResponseEntity<>(pagamentoResp, HttpStatus.CREATED);
+
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 }
