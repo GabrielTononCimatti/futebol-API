@@ -1,5 +1,6 @@
 package com.dw.futsabao.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
@@ -17,6 +18,7 @@ public class Pagamento {
 
     @ManyToOne
     @JoinColumn(name = "cod_jogador", nullable = false)
+    @JsonManagedReference
     private Jogador jogador;
 
     //Construtores
