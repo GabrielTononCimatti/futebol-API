@@ -67,4 +67,28 @@ public class PagamentoController {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+
+    //PUT pagamento por id
+    @PutMapping("/{id}")
+    public ResponseEntity<Pagamento> updatePagamento(@PathVariable("id") Integer id, @RequestBody Pagamento pagamento)
+    {
+        try {
+            Optional<Pagamento> data = pagamentoRepository.findById(id);
+
+            if (data.isPresent())
+            {
+                Pagamento pagamentoResp = data.get();
+                pagamentoResp.setAno(pagamento.getAno());
+                pagamentoResp.setMes(pagamento.getMes());
+                pagamentoResp.setValor(pagamento.getValor());
+                pagamentoResp.setJogador(pagamento.getJogador());
+
+                return new ResponseEntity<>(pagamentoRepository.save(pagamentoResp), HttpStatus.OK);
+            }
+            else
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 }

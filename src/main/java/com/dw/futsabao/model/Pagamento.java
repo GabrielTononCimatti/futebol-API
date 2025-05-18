@@ -30,7 +30,6 @@ public class Pagamento {
         this.valor = valor;
         this.jogador = jogador;
     }
-
     //Getters e Setters
 
     public Integer getCodPagamento() {
