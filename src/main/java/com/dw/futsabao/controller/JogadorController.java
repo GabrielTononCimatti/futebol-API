@@ -18,7 +18,6 @@ public class JogadorController {
     @Autowired
     JogadorRepository jogadorRepository;
 
-
     //GET com filtros (nome e email)
     @GetMapping
     public ResponseEntity<List<Jogador>> buscarJogadores(@RequestParam(required = false) String nome, @RequestParam(required = false) String email) {
@@ -29,13 +28,14 @@ public class JogadorController {
                 jogadores = jogadorRepository.findAll();
             else if (nome != null && email == null)
                 jogadores = jogadorRepository.findByNomeContainingIgnoreCase(nome);
-            else if (nome != null && email == null)
+            else if (nome == null && email != null)
                 jogadores = jogadorRepository.findByEmailContainingIgnoreCase(email);
             else
                 jogadores = jogadorRepository.findByNomeContainingIgnoreCaseAndEmailContainingIgnoreCase(nome, email);
 
             if (jogadores.isEmpty())
                 return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+
             return new ResponseEntity<>(jogadores, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
@@ -44,8 +44,17 @@ public class JogadorController {
 
     //GET por id
     @GetMapping("/{id}")
-    public Optional<Jogador> buscarPorId(@PathVariable("id") Integer id) {
-        return jogadorRepository.findById(id);
+    public ResponseEntity<Jogador> buscarPorId(@PathVariable("id") Integer id) {
+        try {
+            Optional<Jogador> jogador = jogadorRepository.findById(id);
+
+            if (jogador.isEmpty())
+                return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+
+            return new ResponseEntity<>(jogador.get(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        }
     }
 
     //POST novo jogador
