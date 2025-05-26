@@ -2,7 +2,7 @@
 
 ## Autores
 
-### **João Vitor Tomadon Daciuk | Gabriel Tonon Cimatti**
+### **Gabriel Tonon Cimatti | João Vitor Tomadon Daciuk**
 
 Este projeto é uma **API RESTful** desenvolvida com **Java + Spring Boot**, voltada para o **gerenciamento de mensalistas em jogos de futebol**. O sistema segue o padrão arquitetural **MVC** e permite o **cadastro e consulta de jogadores e seus respectivos pagamentos**.
 
